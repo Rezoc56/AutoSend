@@ -4,7 +4,7 @@ import keyboard
 import os
 import requests
 
-ver = '1.1'
+ver = '1.1.1'
 
 class AutoSend:
     def __init__(self, root):
@@ -103,7 +103,7 @@ class AutoSend:
         
         self.start_button.config(text="Остановить скрипт", command=self.stop_script)
         self.save_settings()
-        additional_text = self.text_entry.get(ver, tk.END)
+        additional_text = self.text_entry.get("1.0", tk.END)
         def on_key_press(event):
             if event.name == selected_key:
                 keyboard.write(additional_text)
