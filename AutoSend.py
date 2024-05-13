@@ -4,7 +4,7 @@ import keyboard
 import os
 import requests
 
-ver = '1.1.1'
+ver = '1.2'
 
 class AutoSend:
     def __init__(self, root):
@@ -48,12 +48,15 @@ class AutoSend:
         self.selected_key = tk.StringVar()
         self.key_button = tk.Button(self.main_frame, textvariable=self.selected_key, command=self.select_key, bg='#333', fg='white')
         self.key_button.grid(row=1, column=1, sticky="w", padx=5, pady=5)
+        self.key_button.config(cursor="hand2")
 
         self.reset_button = tk.Button(self.main_frame, text="Сбросить клавишу", command=self.reset_key, bg='#333', fg='white')
         self.reset_button.grid(row=2, column=0, columnspan=2, padx=5, pady=5)
+        self.reset_button.config(cursor="hand2")
 
-        self.start_button = tk.Button(self.main_frame, text="Запустить скрипт", command=self.start_script, bg='#333', fg='white')
+        self.start_button = tk.Button(self.main_frame, text="Запустить", command=self.start_script, bg='#333', fg='white')
         self.start_button.grid(row=3, column=0, columnspan=2, padx=5, pady=5)
+        self.start_button.config(cursor="hand2")
 
         self.rezoc_label = tk.Label(self.root, text="Rezoc Studio")
         self.rezoc_label.pack(side="right", anchor="se")
@@ -81,14 +84,17 @@ class AutoSend:
                     self.text_entry.insert(tk.END, lines[1])
 
     def select_key(self):
+        self.text_entry.config(state=tk.DISABLED)
         def on_key_press(event):
             self.selected_key.set(event.name)
             self.key_button.config(state=tk.DISABLED)
+            self.text_entry.config(state=tk.NORMAL)
             keyboard.unhook_all()
         keyboard.on_press(on_key_press)
 
     def reset_key(self):
         self.key_button.config(state=tk.NORMAL)
+        self.key_button.config(cursor="hand2")
         self.selected_key.set("Выберите клавишу")
 
     def start_script(self):
@@ -98,10 +104,10 @@ class AutoSend:
             return
         
         self.text_entry.config(state=tk.DISABLED)
-        self.key_button.config(state=tk.DISABLED)
-        self.reset_button.config(state=tk.DISABLED)
+        self.key_button.config(state=tk.DISABLED, cursor="arrow")
+        self.reset_button.config(state=tk.DISABLED, cursor="arrow")
         
-        self.start_button.config(text="Остановить скрипт", command=self.stop_script)
+        self.start_button.config(text="Остановить", command=self.stop_script)
         self.save_settings()
         additional_text = self.text_entry.get("1.0", tk.END)
         def on_key_press(event):
@@ -111,9 +117,9 @@ class AutoSend:
 
     def stop_script(self):
         self.text_entry.config(state=tk.NORMAL)
-        self.reset_button.config(state=tk.NORMAL)
+        self.reset_button.config(state=tk.NORMAL, cursor="hand2")
         
-        self.start_button.config(text="Запустить скрипт", command=self.start_script)
+        self.start_button.config(text="Запустить", command=self.start_script)
         keyboard.unhook_all()
 
     def check_update(self):
@@ -130,16 +136,17 @@ class AutoSend:
                     self.version2_label.config(text="||  Послед. версия: " + latest_version)
                     update_button = tk.Button(self.root, text="Обновить", command=self.update_app, bg='#333', fg='white')
                     update_button.pack(side="left", anchor="s")
+                    update_button.config(cursor="hand2")
                     self.latest_version = latest_version
                 else:
                     self.version_label.config(text="Версия: " + current_version)
                     self.version2_label.config(text="||  Послед. версия: " + latest_version)
             else:
                 print("Ошибка при загрузке версии:", response.status_code)
-                messagebox.showerror("Ошибка", "Не удалось проверить обновления:", response.status_code)
+                messagebox.showerror("Ошибка", f"Не удалось проверить обновления: {response.status_code}")
         except Exception as e:
             print("Ошибка при проверке обновлений:", e)
-            messagebox.showerror("Ошибка", "Ошибка при проверке обновлений:", e)
+            messagebox.showerror("Ошибка", f"Ошибка при проверке обновлений: {e}")
 
     def update_app(self):
         import webbrowser
