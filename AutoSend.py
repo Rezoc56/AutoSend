@@ -4,12 +4,16 @@ import keyboard
 import os
 import requests
 
-ver = '1.2'
+ver = '1.3'
 
 class AutoSend:
     def __init__(self, root):
         self.root = root
         self.root.title("AutoSend")
+
+        self.root.resizable(False, False)
+        self.root.attributes('-fullscreen', False)
+        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
         self.root.tk_setPalette(background='#222', foreground='white', activeForeground='white')
         style = ttk.Style()
@@ -42,6 +46,12 @@ class AutoSend:
         self.text_entry = tk.Text(self.main_frame, height=5, width=40, bg='#333', fg='white')
         self.text_entry.grid(row=0, column=0, columnspan=2, padx=5, pady=5)
 
+        self.context_menu = tk.Menu(self.text_entry, tearoff=0)
+        self.context_menu.add_command(label="Копировать", command=self.copy_text)
+        self.context_menu.add_command(label="Вставить", command=self.paste_text)
+        self.context_menu.add_command(label="Выбрать все", command=self.select_all)
+        self.text_entry.bind("<Button-3>", self.show_context_menu)
+
         self.key_label = tk.Label(self.main_frame, text="Клавиша активации:", bg='#222', fg='white')
         self.key_label.grid(row=1, column=0, sticky="e", padx=5, pady=5)
 
@@ -65,6 +75,10 @@ class AutoSend:
         self.settings_file = os.path.join(self.settings_path, "settings.txt")
         self.load_settings()
 
+    def on_closing(self):
+        self.save_settings()
+        self.root.destroy()
+
     def save_settings(self):
         with open(self.settings_file, "w") as file:
             file.write(self.selected_key.get() + "\n")
@@ -75,7 +89,6 @@ class AutoSend:
         if not os.path.exists(self.settings_file):
             os.makedirs(self.settings_path, exist_ok=True)
             self.selected_key.set("Выберите клавишу")
-            self.save_settings()
         else:
             with open(self.settings_file, "r") as file:
                 lines = file.readlines()
@@ -108,7 +121,6 @@ class AutoSend:
         self.reset_button.config(state=tk.DISABLED, cursor="arrow")
         
         self.start_button.config(text="Остановить", command=self.stop_script)
-        self.save_settings()
         additional_text = self.text_entry.get("1.0", tk.END)
         def on_key_press(event):
             if event.name == selected_key:
@@ -151,6 +163,21 @@ class AutoSend:
     def update_app(self):
         import webbrowser
         webbrowser.open("https://rezoc.rf.gd/autosend.php")
+
+    def copy_text(self, event=None):
+        self.text_entry.event_generate("<<Copy>>")
+
+    def paste_text(self, event=None):
+        self.text_entry.event_generate("<<Paste>>")
+
+    def select_all(self):
+        self.text_entry.tag_add(tk.SEL, "1.0", tk.END)
+        self.text_entry.mark_set(tk.INSERT, "1.0")
+        self.text_entry.see(tk.INSERT)
+        return "break"
+
+    def show_context_menu(self, event):
+        self.context_menu.tk_popup(event.x_root, event.y_root)
 
 if __name__ == "__main__":
     root = tk.Tk()
