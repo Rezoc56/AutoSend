@@ -1,24 +1,22 @@
 # AutoSend
 
-Стабильная версия — **1.4**
+Стабильная версия — **1.5**
 
-## Что нового в 1.4
+## Что нового в 1.5
 
-* Добавлен счётчик символов в реальном времени (подсвечивается оранжевым при количестве символов более 500).
-* Добавлена настраиваемая задержка перед отправкой (слайдер от 0 до 5 секунд).
-* Добавлен режим отправки:
-
-  * Вставка + Enter;
-  * Только вставка.
-* Добавлен статусбар с цветовой индикацией состояния программы:
-
-  * Серый — остановлено;
-  * Зелёный — активно.
-* Добавлена горячая клавиша **Ctrl+Enter** для быстрого запуска и остановки.
-* Расширено контекстное меню: добавлены пункты «Вырезать», «Отменить» и «Повторить».
-* Проверка обновлений перенесена в отдельный поток и больше не замедляет запуск программы.
-* Настройки теперь сохраняют выбранную задержку и режим отправки между запусками.
-* Обновлён дизайн интерфейса.
+* Добавлен режим отправки «По очереди»: каждая строка текста отправляется отдельным нажатием активации, после последней строки отправка начинается заново.
+* Добавлена глобальная горячая клавиша **F8** для запуска и остановки, работает даже когда окно программы не в фокусе.
+* Добавлен счётчик отправок в нижней панели.
+* Счётчик символов теперь показывает и количество непустых строк.
+* Добавлена опция «Случайность задержки» (разброс ±30%), чтобы отправка выглядела естественнее.
+* Добавлена опция «Поверх всех окон».
+* Настройки теперь хранятся в формате JSON и сохраняют все новые параметры между запусками; старый файл `settings.txt` подхватывается автоматически.
+* Исправлена потеря многострочного текста при загрузке настроек.
+* Исправлено зависание обработчика клавиатуры во время задержки: отправка теперь выполняется в отдельном потоке и защищена от повторных срабатываний.
+* Исправлено отображение надписи «Нажмите клавишу...» при выборе клавиши активации.
+* Запуск с пустым текстом теперь блокируется с предупреждением.
+* Остановка программы снимает только собственные перехватчики клавиатуры, не затрагивая глобальную горячую клавишу.
+* Оптимизирован код интерфейса и обновлён дизайн: единые стили кнопок с подсветкой при наведении, улучшенные отступы и переключатели.
 
 ## Функционал
 
@@ -93,25 +91,23 @@ pyinstaller --onefile --windowed AutoSend.py
 
 # AutoSend
 
-Stable version — **1.4**
+Stable version — **1.5**
 
-## What's New in Version 1.4
+## What's New in Version 1.5
 
-* Added a real-time character counter (highlighted in orange when the text exceeds 500 characters).
-* Added a configurable delay before sending (0–5 second slider).
-* Added sending modes:
-
-  * Paste + Enter;
-  * Paste Only.
-* Added a status bar with color indication:
-
-  * Gray — stopped;
-  * Green — active.
-* Added the **Ctrl+Enter** hotkey for quick start and stop.
-* Expanded the context menu with Cut, Undo, and Redo actions.
-* Update checking now runs in a background thread and no longer delays program startup.
-* Settings now save the selected delay and sending mode between sessions.
-* Updated user interface design.
+* Added the "Sequential" sending mode: each line of text is sent on a separate activation key press, looping back to the first line after the last one.
+* Added the global **F8** hotkey for starting and stopping, which works even when the program window is not in focus.
+* Added a sent messages counter to the bottom bar.
+* The character counter now also shows the number of non-empty lines.
+* Added the "Randomize delay" option (±30% variation) to make sending look more natural.
+* Added the "Always on top" option.
+* Settings are now stored in JSON format and keep all new options between sessions; the old `settings.txt` file is imported automatically.
+* Fixed loss of multi-line text when loading settings.
+* Fixed the keyboard handler freezing during the delay: sending now runs in a separate thread and is protected against repeated triggers.
+* Fixed the display of the "Press a key..." label when selecting the activation key.
+* Starting with empty text is now blocked with a warning.
+* Stopping the program now removes only its own keyboard hooks, leaving the global hotkey intact.
+* Optimized the interface code and updated the design: unified button styles with hover highlighting, improved spacing, and toggles.
 
 ## Features
 
